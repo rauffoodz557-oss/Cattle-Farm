@@ -2,8 +2,9 @@ name: Build Desktop App
 
 on:
   push:
-    tags:
-      - 'v*' # جب بھی آپ نیا ورژن ٹیگ پش کریں گے (مثلاً v1.0.0) یہ بلڈ شروع ہوگا
+    branches:
+      - main # یا master جو بھی آپ کی برانچ کا نام ہے
+  workflow_dispatch: # اس سے Actions ٹیب میں Manually چلانے کا بٹن بھی آ جائے گا
 
 jobs:
   build:
