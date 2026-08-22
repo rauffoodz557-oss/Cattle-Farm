@@ -13,17 +13,17 @@ jobs:
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.2.2
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v4.2.0
         with:
-          node-version: 18 # ونڈوز 8 کی مطابقت کے لیے Node 18 بہتر ہے
+          node-version: 20 # GitHub کے نئے رنر پر Node 20/22 سپورٹڈ ہے
 
       - name: Install Dependencies
-        run: npm install # npm ci کے بجائے npm install استعمال کریں
+        run: npm install
 
       - name: Build EXE
-        run: npx electron-builder --win nsis:ia32 --win nsis:x64
+        run: npx electron-builder --win
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
