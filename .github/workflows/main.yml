@@ -3,8 +3,9 @@ name: Build Desktop App
 on:
   push:
     branches:
-      - main # یا master جو بھی آپ کی برانچ کا نام ہے
-  workflow_dispatch: # اس سے Actions ٹیب میں Manually چلانے کا بٹن بھی آ جائے گا
+      - main
+      - master
+  workflow_dispatch:
 
 jobs:
   build:
@@ -17,12 +18,12 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 18 # ونڈوز 8 کی مطابقت کے لیے Node 18 بہتر ہے
 
       - name: Install Dependencies
-        run: npm ci
+        run: npm install # npm ci کے بجائے npm install استعمال کریں
 
       - name: Build EXE
-        run: npx electron-builder --win
+        run: npx electron-builder --win nsis:ia32 --win nsis:x64
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
