@@ -1,0 +1,143 @@
+﻿<!DOCTYPE html>
+<html lang="ur" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RAUF CATTLE FARM</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- QR Code Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <h1>RAUF CATTLE FARM</h1>
+      <div id="monthTitle" class="month-title"></div>
+    </div>
+    <div class="backup-buttons">
+      <button id="exportBtn" class="btn green">Export Backup</button>
+      <button id="importBtn" class="btn blue">Import Backup</button>
+      <input id="importFile" type="file" accept=".json" hidden>
+    </div>
+  </header>
+
+  <nav class="menu">
+    <button class="menu-btn active" data-page="milkPage">1. Total Milk</button>
+    <button class="menu-btn" data-page="customersPage">2. Customer Name & Contact</button>
+    <button class="menu-btn" data-page="newCustomerPage">3. New Customer</button>
+    <!-- 4th Menu Button -->
+    <button class="menu-btn menu-btn-expenses" data-page="expensesPage">
+      <span class="exp-head">Rauf Cattle Farm</span>
+      <span class="exp-sub" id="nextMonthExpLabel">Expenses</span>
+    </button>
+  </nav>
+
+  <main>
+    <section id="milkPage" class="page active">
+      <div class="toolbar">
+        <div>
+          <label>Month</label>
+          <input type="month" id="monthPicker">
+        </div>
+        <div class="summary-card">
+          <span>Grand Total Milk</span>
+          <strong id="grandTotal">0</strong> KG
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table id="milkTable">
+          <thead></thead>
+          <tbody></tbody>
+          <tfoot></tfoot>
+        </table>
+      </div>
+      <p class="hint">ہر customer کے سامنے روزانہ دودھ KG میں لکھیں۔ Total خودکار حساب ہوگا۔ Print سے صرف اسی customer کا A6 statement کھلے گا۔</p>
+    </section>
+
+    <section id="customersPage" class="page">
+      <div class="section-title">
+        <h2>Customer Name & Contact</h2>
+        <input id="customerSearch" class="search" placeholder="Customer تلاش کریں...">
+      </div>
+      <div class="table-wrap">
+        <table class="simple-table">
+          <thead>
+            <tr><th>Sr.No</th><th>Customer Name</th><th>Contact</th><th>Rate</th><th>Action</th></tr>
+          </thead>
+          <tbody id="customerList"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="newCustomerPage" class="page">
+      <div class="form-card">
+        <h2>New Customer Add کریں</h2>
+        <label>Customer Name *</label>
+        <input id="newName" placeholder="مثلاً: شکر">
+
+        <label>Contact Number</label>
+        <input id="newContact" placeholder="0300-0000000">
+
+        <label>Milk Rate (Rs/KG)</label>
+        <input id="newRate" type="number" step="0.01" value="200">
+
+        <button id="saveCustomer" class="btn green large">Save Customer</button>
+        <div id="formMessage" class="message"></div>
+      </div>
+    </section>
+
+    <!-- Expenses Section Page -->
+    <section id="expensesPage" class="page">
+      <div class="section-title">
+        <h2 id="expensesPageHeading">Rauf Cattle Farm Expenses</h2>
+        <button id="addExpenseRowBtn" class="btn green">+ New Entry Add کریں</button>
+      </div>
+
+      <div class="table-wrap" style="margin-bottom: 15px;">
+        <table class="simple-table" id="expensesTable">
+          <thead>
+            <tr>
+              <th style="width: 60px;">Sr.No</th>
+              <th style="width: 130px;">Date</th>
+              <th>Details</th>
+              <th>Authorised Name</th>
+              <th style="width: 130px;">Amount</th>
+              <th style="width: 130px;">Advance</th>
+              <th style="width: 80px;">Action</th>
+            </tr>
+          </thead>
+          <tbody id="expensesList"></tbody>
+        </table>
+      </div>
+
+      <div class="expenses-summary" style="display:flex; gap:15px; justify-content:flex-end;">
+        <div class="summary-card">کل اخراجات (Total Amount): <strong id="expTotalAmount">0</strong></div>
+        <div class="summary-card">کل ایڈوانس (Total Advance): <strong id="expTotalAdvance">0</strong></div>
+        <div class="summary-card" style="background:#e8f5e9;">بقیہ رقم (Net Total): <strong id="expNetTotal">0</strong></div>
+      </div>
+    </section>
+  </main>
+
+  <div id="editModal" class="modal hidden">
+    <div class="modal-box">
+      <button class="close" id="closeModal">×</button>
+      <h2>Customer Edit</h2>
+      <input type="hidden" id="editId">
+      <label>Customer Name</label>
+      <input id="editName">
+      <label>Contact</label>
+      <input id="editContact">
+      <label>Rate (Rs/KG)</label>
+      <input id="editRate" type="number" step="0.01">
+      <div class="modal-actions">
+        <button id="updateCustomer" class="btn green">Update</button>
+        <button id="deleteCustomer" class="btn red">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="printArea" aria-hidden="true"></div>
+  <script src="app.js"></script>
+</body>
+</html>
