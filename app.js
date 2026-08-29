@@ -1,4 +1,4 @@
-﻿const KEY = "raufCattleFarmData_v1";
+const KEY = "raufCattleFarmData_v1";
 let data = JSON.parse(localStorage.getItem(KEY) || "null") || { customers: [], months: {}, expenses: {} };
 const defaultCustomers = ["ڈاکٹر تنویر","عامرعاطف","عمر قصاِئی","بشارت بوس","فیصل","عاطف","نعمان","الحمد گڈز","راشد","ناصر","یاسر","مولانا شفقت اللہ","جاوید شاہ فوٹو اسٹیٹ","راحیل","امجد بلوچ","عامر","چناب یاسر پمپ","عبداللہ پٹھان","جاوید چک 72","قیوم","مولوی طاہر","عرفان","ندیم ہوٹل","شہزیب","شکور ہوٹل","فیصل","مغل","عثمان"];
 
@@ -469,7 +469,16 @@ function printCustomer(id){
    createQR("billQrCode", billUrl);
    createQR("linkQrCode", baseUrl);
 
-   setTimeout(() => { window.print(); }, 500);
+   setTimeout(() => {
+     if (window.electronAPI && window.electronAPI.printPage) {
+       // Running inside the Electron desktop app: ask main process
+       // to open the native print dialog (silent:false).
+       window.electronAPI.printPage();
+     } else {
+       // Running in a normal browser (Chrome etc.): normal Ctrl+P / print preview.
+       window.print();
+     }
+   }, 500);
  }
 }
 
