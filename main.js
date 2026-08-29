@@ -1,5 +1,7 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, shell } = require('electron');
 const path = require('path');
+const fs = require('fs');
+const os = require('os');
 
 let win;
 
@@ -24,19 +26,22 @@ app.on('window-all-closed', () => {
 });
 
 // Renderer (app.js via preload) asks main process to print.
-// silent:false forces the native OS print dialog to appear,
-// where the user can pick printer, paper size (A4/A6) and scale.
-ipcMain.handle('do-print', () => {
-  return new Promise((resolve) => {
-    if (!win) return resolve(false);
-    win.webContents.print(
-      {
-        silent: false,
-        printBackground: true
-      },
-      (success, errorType) => {
-        resolve({ success, errorType });
-      }
-    );
-  });
+// Electron has no built-in Chrome-style Print Preview (with paper size /
+// scale controls on screen) — only a bare OS print dialog. So instead we
+// render the bill to a PDF and open it in the user's default PDF viewer
+// (Edge / Acrobat / etc.), whose own print dialog looks and works just
+// like Chrome's Print Preview: paper size (A4/A6), scale, live preview.
+ipcMain.handle('do-print', async () => {
+  if (!win) return { success: false };
+  try {
+    const pdfBuffer = await win.webContents.printToPDF({
+      printBackground: true
+    });
+    const tempPath = path.join(os.tmpdir(), `bill-${Date.now()}.pdf`);
+    fs.writeFileSync(tempPath, pdfBuffer);
+    await shell.openPath(tempPath);
+    return { success: true };
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
 });
